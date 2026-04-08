@@ -82,7 +82,7 @@ Trong bài toán hệ thống khuyến nghị (Recommendation System) và Agent 
 
 
 # Top 3 Failure Mode
-**Failure Mode 1: ảo giác phim không tồn tại*8
+**Failure Mode 1: ảo giác phim không tồn tại**
 - Trigger: Người dùng yêu cầu 1 tổ hợp ngách, ví dụ "Gợi ý cho tôi một bộ phim hành động pha hài hước" thực tế trong file không có phim nào thỏa mãn điều kiện
 - Consequence: Do bản tính chiều theo người dùng AI tự bịa ra một cái tên mới nghe hợp lý
 - Mitigation: Bắt buộc dùng RAG cứng LLM không được phép tự bịa ra tên phim. Output tên phim trước khi hiển thị phải trải qua 1 hàm kiểm tra xem tên phim này có thật sự nằm trong dtb không, nếu không trả về luồng fallback
