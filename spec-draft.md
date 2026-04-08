@@ -50,12 +50,13 @@
    - correction trong ngữ cảnh sản phẩm giúp cải thiện retrieval/ranking cho đúng use case discovery
    - các refinement như “đừng là series”, “ít máu me hơn”, “xem trước khi ngủ” phản ánh nhu cầu thực tế rất đặc thù mà model tổng quát không nắm chắc nếu không có signal từ sản phẩm
 
+# 3. Eval metrics + threshold
 
-### 1. Optimize Precision hay Recall?
+## Optimize Precision hay Recall?
 
 **Lựa chọn:** **[x] Precision**
 
-#### **Tại sao?**
+### **Tại sao?**
 Trong bài toán hệ thống khuyến nghị (Recommendation System) và Agent tư vấn, **Precision (Độ chính xác)** quan trọng hơn vì:
 * **Trải nghiệm người dùng:** Người dùng chỉ có thời gian xem 1-2 bộ phim mỗi tối. Nếu Agent đề xuất 5 phim và cả 5 đều đúng gu (High Precision), người dùng sẽ tin tưởng Agent tuyệt đối. 
 * **Chi phí của sự sai lầm (Cost of False Positive):** Nếu Agent khẳng định "Bộ phim này chắc chắn bạn sẽ thích" nhưng khi bật lên lại cực kỳ tệ so với gu của họ, người dùng sẽ cảm thấy bị lừa và mất thời gian.
@@ -67,7 +68,7 @@ Trong bài toán hệ thống khuyến nghị (Recommendation System) và Agent 
 
 ---
 
-### 2. Bảng chỉ số đánh giá (Eval Metrics + Threshold)
+## Bảng chỉ số đánh giá (Eval Metrics + Threshold)
 
 Đối với một Agent, chúng ta không chỉ đo lường độ chính xác của mô hình AI mà còn phải đo lường chất lượng của câu trả lời.
 
@@ -80,45 +81,7 @@ Trong bài toán hệ thống khuyến nghị (Recommendation System) và Agent 
 | **Response Latency (Độ trễ)** | $< 3s$ | $> 7s$ | Thời gian từ lúc User hỏi đến khi Agent trả lời. Quá 7 giây người dùng sẽ mất kiên nhẫn. |
 | **Diversity Score (Độ đa dạng)** | $\ge 0.6$ | $< 0.3$ | Tránh việc Agent chỉ gợi ý đi gợi ý lại các phim quá nổi tiếng (như *Squid Game* hay *Stranger Things*) cho mọi User. |
 
-
-
-
-
-
-
-### 6. Mini AI Chatbot Phim Ảnh
-
-## 1. Tổng quan dự án (Overview)
-CineMate là một Mini AI Chatbot chuyên biệt, được thiết kế để trở thành một "chuyên gia phim ảnh" cá nhân. Chatbot giúp người dùng tìm kiếm, khám phá và thảo luận về phim thông qua giao diện trò chuyện tự nhiên. Mục tiêu là giải quyết vấn đề "không biết xem gì hôm nay" và cung cấp thông tin phim nhanh chóng, chính xác.
-
-## 2. Đối tượng mục tiêu (Target Audience)
-* Người yêu thích phim ảnh (Cinephiles) muốn tìm hiểu sâu về điện ảnh.
-* Người dùng thông thường cần gợi ý phim giải trí cuối tuần.
-* Người dùng các nền tảng streaming (Netflix, Apple TV, rạp chiếu) cần tra cứu thông tin nhanh.
-
-## 3. Tính năng cốt lõi (Core Features - MVP)
-* **Gợi ý phim thông minh (Smart Recommendations):** Đề xuất phim dựa trên thể loại, tâm trạng (mood), diễn viên, đạo diễn, hoặc phim tương tự (VD: *"Gợi ý cho tôi phim hành động giống John Wick nhưng có yếu tố hài hước"*).
-* **Tra cứu thông tin chi tiết:** Cung cấp tóm tắt nội dung (không spoiler), điểm đánh giá (IMDb, Rotten Tomatoes, Letterboxd), dàn diễn viên, và năm phát hành.
-* **Chỉ điểm nền tảng xem phim:** Cho biết phim hiện đang chiếu rạp hay có sẵn trên nền tảng streaming nào tại Việt Nam.
-* **Giải đáp kiến thức điện ảnh (Movie Trivia/Q&A):** Trả lời các câu hỏi về giải thích cái kết (ending explanation), easter eggs, hoặc thông tin hậu trường.
-
-## 4. Yêu cầu kỹ thuật (Technical Architecture)
-* **AI Engine / LLM:** Sử dụng các mô hình ngôn ngữ lớn (như Gemini Flash hoặc GPT-4o-mini) để xử lý ngôn ngữ tự nhiên, tối ưu chi phí và tốc độ phản hồi.
-* **Kiến trúc RAG (Retrieval-Augmented Generation):**
-    * **Cơ sở dữ liệu (Vector DB):** Sử dụng Pinecone hoặc Milvus để lưu trữ vector hóa dữ liệu kịch bản và tóm tắt phim.
-    * **Nguồn dữ liệu API:** Tích hợp TMDB API (The Movie Database), OMDb API để cập nhật dữ liệu phim realtime.
-* **Nền tảng triển khai (Platforms):** Tích hợp dưới dạng Web Widget, Telegram Bot và Facebook Messenger.
-
-## 5. Yêu cầu Giao diện (UI/UX)
-* Hỗ trợ hiển thị dạng thẻ (Cards/Carousels) cho kết quả phim (gồm Poster, Tên phim, Điểm số, Nút "Xem trailer").
-* Tốc độ phản hồi (Latency): Dưới 2 giây cho mỗi tin nhắn.
-* Giọng văn (Tone of voice): Thân thiện, hài hước, và đam mê điện ảnh. Có thể thay đổi phong cách nói chuyện (VD: Giọng châm biếm như Deadpool hoặc nghiêm túc như nhà phê bình).
-
-## 6. Tiêu chí thành công (Success Metrics - KPIs)
-* **Độ chính xác (Accuracy):** Tỷ lệ ảo giác AI (Hallucination rate) liên quan đến thông tin phim < 5%.
-* **Mức độ tương tác:** Trung bình > 5 tin nhắn mỗi phiên trò chuyện (Session length).
-* **Tỷ lệ chuyển đổi (CTR):** > 10% người dùng click vào link xem trailer hoặc link nền tảng streaming.
-# Top 3 Failure Mode
+# 4. Top 3 Failure Mode
 **Failure Mode 1: ảo giác phim không tồn tại**
 - Trigger: Người dùng yêu cầu 1 tổ hợp ngách, ví dụ "Gợi ý cho tôi một bộ phim hành động pha hài hước" thực tế trong file không có phim nào thỏa mãn điều kiện
 - Consequence: Do bản tính chiều theo người dùng AI tự bịa ra một cái tên mới nghe hợp lý
@@ -131,10 +94,50 @@ CineMate là một Mini AI Chatbot chuyên biệt, được thiết kế để t
 
 **Failure mode 3: Bị thiên kiến bias vì lạm dụng hành vi người dùng**
 - Trigger: Người dùng có lịch sử 6 tháng qua chỉ toàn xem phim ngôn tình Hàn Quốc. Hôm nay họ nhắn với chatbot: "Cuối tuần này tôi đang chán, muốn xem một thể loại gì đó thật mới mẻ, giật gân, đột phá để đổi gió."
-- Consequence:thuật toán bị Overfitting (High Bias vào quá khứ), nó đánh trọng số lịch sử quá cao. Kết quả là nó vẫn tiếp tục gợi ý phim tình cảm Hàn Quốc nhưng cố gắng miêu tả là rất đột phá. Bot không bắt được sự thay đổi ý định của người dùng
+- Consequence: thuật toán bị Overfitting (High Bias vào quá khứ), nó đánh trọng số lịch sử quá cao. Kết quả là nó vẫn tiếp tục gợi ý phim tình cảm Hàn Quốc nhưng cố gắng miêu tả là rất đột phá. Bot không bắt được sự thay đổi ý định của người dùng
+- Mitigation:
+
+
+
+
+
+# 6. Mini AI Chatbot Phim Ảnh
+
+## Tổng quan dự án (Overview)
+CineMate là một Mini AI Chatbot chuyên biệt, được thiết kế để trở thành một "chuyên gia phim ảnh" cá nhân. Chatbot giúp người dùng tìm kiếm, khám phá và thảo luận về phim thông qua giao diện trò chuyện tự nhiên. Mục tiêu là giải quyết vấn đề "không biết xem gì hôm nay" và cung cấp thông tin phim nhanh chóng, chính xác.
+
+## 2. Đối tượng mục tiêu (Target Audience)
+* Người yêu thích phim ảnh (Cinephiles) muốn tìm hiểu sâu về điện ảnh.
+* Người dùng thông thường cần gợi ý phim giải trí cuối tuần.
+* Người dùng các nền tảng streaming (Netflix, Apple TV, rạp chiếu) cần tra cứu thông tin nhanh.
+
+## Tính năng cốt lõi (Core Features - MVP)
+* **Gợi ý phim thông minh (Smart Recommendations):** Đề xuất phim dựa trên thể loại, tâm trạng (mood), diễn viên, đạo diễn, hoặc phim tương tự (VD: *"Gợi ý cho tôi phim hành động giống John Wick nhưng có yếu tố hài hước"*).
+* **Tra cứu thông tin chi tiết:** Cung cấp tóm tắt nội dung (không spoiler), điểm đánh giá (IMDb, Rotten Tomatoes, Letterboxd), dàn diễn viên, và năm phát hành.
+* **Chỉ điểm nền tảng xem phim:** Cho biết phim hiện đang chiếu rạp hay có sẵn trên nền tảng streaming nào tại Việt Nam.
+* **Giải đáp kiến thức điện ảnh (Movie Trivia/Q&A):** Trả lời các câu hỏi về giải thích cái kết (ending explanation), easter eggs, hoặc thông tin hậu trường.
+
+## Yêu cầu kỹ thuật (Technical Architecture)
+* **AI Engine / LLM:** Sử dụng các mô hình ngôn ngữ lớn (như Gemini Flash hoặc GPT-4o-mini) để xử lý ngôn ngữ tự nhiên, tối ưu chi phí và tốc độ phản hồi.
+* **Kiến trúc RAG (Retrieval-Augmented Generation):**
+    * **Cơ sở dữ liệu (Vector DB):** Sử dụng Pinecone hoặc Milvus để lưu trữ vector hóa dữ liệu kịch bản và tóm tắt phim.
+    * **Nguồn dữ liệu API:** Tích hợp TMDB API (The Movie Database), OMDb API để cập nhật dữ liệu phim realtime.
+* **Nền tảng triển khai (Platforms):** Tích hợp dưới dạng Web Widget, Telegram Bot và Facebook Messenger.
+
+## Yêu cầu Giao diện (UI/UX)
+* Hỗ trợ hiển thị dạng thẻ (Cards/Carousels) cho kết quả phim (gồm Poster, Tên phim, Điểm số, Nút "Xem trailer").
+* Tốc độ phản hồi (Latency): Dưới 2 giây cho mỗi tin nhắn.
+* Giọng văn (Tone of voice): Thân thiện, hài hước, và đam mê điện ảnh. Có thể thay đổi phong cách nói chuyện (VD: Giọng châm biếm như Deadpool hoặc nghiêm túc như nhà phê bình).
+
+## Tiêu chí thành công (Success Metrics - KPIs)
+* **Độ chính xác (Accuracy):** Tỷ lệ ảo giác AI (Hallucination rate) liên quan đến thông tin phim < 5%.
+* **Mức độ tương tác:** Trung bình > 5 tin nhắn mỗi phiên trò chuyện (Session length).
+* **Tỷ lệ chuyển đổi (CTR):** > 10% người dùng click vào link xem trailer hoặc link nền tảng streaming.
+
 - Mitigation: Trong Prompt hệ thống, cần thiết lập quy tắc khi phát hiện từ khóa "đổi gió, mới mẻ, khác biệt, khác", hệ thống phải giảm trọng số lịch sử người dùng xuống 0% và kích hoạt thuật toán gợi ý ngẫu nhiên có kiểm soát hoặc gợi ý các phim "Trending Top 10" nằm ngoài cụm sở thích thường ngày của họ
 
-## Phân Công
+# Phân Công
 - Hoàng Đức Hưng: Canvas
 
+- Nguyễn Hoàng Việt Hùng: Eval metrics và Threshold
 - Nguyễn Thị Hương Giang: Top 3 Failure
