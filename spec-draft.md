@@ -123,7 +123,40 @@ Trong bài toán hệ thống khuyến nghị (Recommendation System) và Agent 
 - Mitigation:
 
 
+# 5. PHÂN TÍCH CHI TIẾT 3 KỊCH BẢN ROI (RETURN ON INVESTMENT)
 
+---
+
+## a. Kịch bản: Conservative (Thận trọng)
+**Mục tiêu:** Tăng hiệu suất khai thác kho nội dung (**Inventory Utilization**)
+
+* **Vấn đề:** Người dùng thường chỉ tập trung vào các phim bom tấn mới nổi, khiến hàng ngàn bộ phim cũ hoặc phim độc lập (Indie) dù đã tốn hàng tỷ đô mua bản quyền nhưng bị "đắp chiếu".
+* **Giải pháp AI:** Chatbot có khả năng **tìm kiếm ngữ nghĩa**, đưa các bộ phim "ngách" đến đúng người dùng dựa trên yêu cầu cụ thể (VD: *"Phim tâm lý kinh dị bối cảnh Bắc Âu"*).
+* **ROI mong đợi:**
+    * Tăng tỉ lệ xem các bộ phim ít nổi tiếng.
+    * Tối ưu hóa chi phí bản quyền đã đầu tư, tránh việc phải chi thêm tiền mua phim mới liên tục khi kho phim cũ vẫn còn giá trị khai thác.
+
+---
+
+## b. Kịch bản: Realistic (Khả thi)
+**Mục tiêu:** Tăng tổng thời gian sử dụng App (**Daily Watch Time**)
+
+* **Vấn đề:** **"Nghịch lý lựa chọn"** khiến người dùng mất quá nhiều thời gian để lướt tìm phim. Đôi khi dành 30 phút chỉ để chọn phim rồi thoát App vì mệt mỏi (**Bounce rate cao**).
+* **Giải pháp AI:** Rút ngắn quy trình từ lúc nảy sinh ý tưởng đến lúc phim bắt đầu chạy. AI đóng vai trò như một người bạn "sành phim" tư vấn ngay lập tức, giúp người dùng ra quyết định nhanh hơn.
+* **ROI mong đợi:**
+    * **Giảm thời gian tìm kiếm** phim đáng kể.
+    * Tăng thời gian xem phim/ngày trên mỗi người dùng. Thời gian xem càng nhiều, **giá trị vòng đời khách hàng (LTV)** càng cao.
+
+---
+
+## c. Kịch bản: Optimistic (Lạc quan)
+**Mục tiêu:** Giảm tỉ lệ rời bỏ dịch vụ (**Churn Rate**)
+
+* **Vấn đề:** Khách hàng hủy gói cước vì cảm thấy *"Nền tảng không còn gì hay cho mình nữa"* – một sự đứt gãy về cảm xúc với dịch vụ.
+* **Giải pháp AI:** Chatbot tạo ra sự **kết nối cá nhân hóa cao độ**. AI nhớ lịch sử xem phim và gu của khách hàng. Mỗi lần họ quay lại và hỏi *"Tối nay xem gì cho vui?"*, họ nhận được một câu trả lời mới mẻ và thú vị mà thuật toán cuộn trang thông thường không làm được.
+* **ROI mong đợi:**
+    * **Giảm tỉ lệ hủy gói cước (Churn rate).**
+    * Với quy mô lớn, chỉ cần giảm **1% tỉ lệ hủy** đã tương đương với việc giữ lại hàng trăm triệu USD doanh thu mỗi năm mà không tốn thêm chi phí marketing tìm khách mới.
 
 
 # 6. Mini AI Chatbot Phim Ảnh
