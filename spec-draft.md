@@ -49,6 +49,31 @@
    - catalog availability theo quốc gia/thời điểm là dữ liệu động, model nền không tự biết chính xác
    - correction trong ngữ cảnh sản phẩm giúp cải thiện retrieval/ranking cho đúng use case discovery
    - các refinement như “đừng là series”, “ít máu me hơn”, “xem trước khi ngủ” phản ánh nhu cầu thực tế rất đặc thù mà model tổng quát không nắm chắc nếu không có signal từ sản phẩm
+  
+# 2. User Stories × 4 Paths (Netflix Q&A Chatbot)
+
+* **Happy Path (Đúng nhu cầu - Phản hồi chính xác):**
+    * **User:** "Tìm cho tôi một bộ phim trinh thám hack não giống *Dark* nhưng nội dung dễ hiểu hơn một chút."
+    * **AI Agent:** Hệ thống truy vấn tập dữ liệu, trích xuất metadata và trả về kết quả: "Dựa trên sở thích về sự bí ẩn của *Dark*, bạn có thể thử *1899* hoặc *Bodies*. Cả hai đều có yếu tố du hành thời gian nhưng mạch phim trực diện hơn."
+    * **Kết quả:** User hài lòng, bấm **Play** ngay trên thẻ phim. (Đạt mục tiêu tăng tỷ lệ xem).
+
+* **Low-confidence Path (Mơ hồ - Cần làm rõ):**
+    * **User:** "Gợi ý cho tôi phim nào hay hay để xem cuối tuần."
+    * **AI Agent:** Nhận diện Intent quá rộng (Confidence < 60%). Thay vì đoán mò, bot phản hồi: "Để tìm được đúng phim bạn thích, bạn muốn một bộ phim lẻ để giải trí nhanh hay một series dài tập để 'cày' suốt cuối tuần? Bạn thích cảm giác nhẹ nhàng hay kịch tính?"
+    * **Kết quả:** User cung cấp thêm thông tin "Phim lẻ, hài hước", giúp Agent thu hẹp phạm vi tìm kiếm và đạt Precision cao hơn.
+
+* **Failure Path (Lỗi/Ngoài phạm vi - Fallback):**
+    * **User:** "Đặt cho tôi một chiếc Pizza đến địa chỉ nhà hiện tại."
+    * **AI Agent:** Nhận diện yêu cầu nằm ngoài phạm vi tư vấn phim (Out-of-scope).
+    * **AI Agent:** "Xin lỗi, tôi là chuyên gia phim ảnh CineMate, tôi không có chức năng đặt đồ ăn. Tuy nhiên, nếu bạn muốn vừa ăn Pizza vừa xem phim về ẩm thực, tôi gợi ý bộ phim *Chef's Table* rất thú vị!"
+    * **Kết quả:** Tránh được lỗi Hallucination (ảo giác) và quay lại đúng vai trò Augmentation.
+
+* **Correction Path (User sửa lỗi - Cải thiện tín hiệu):**
+    * **User:** "Gợi ý phim hành động cho trẻ em xem cùng gia đình."
+    * **AI Agent:** Đưa ra danh sách phim hành động, nhưng có một phim nhãn R (18+).
+    * **User:** Bấm nút **"Không đúng ý"** và nhắn: "Phim này bạo lực quá, tôi cần phim nhãn PG-13."
+    * **AI Agent:** Kích hoạt Metadata Filtering, loại bỏ ngay các phim nhãn R và cập nhật: "Tôi đã hiểu, đây là danh sách phim hành động phiêu lưu phù hợp cho trẻ em (PG-13) như *The Sea Beast* hoặc *Spy Kids*."
+    * **Kết quả:** User nhận được kết quả đúng sau 1 bước sửa; hệ thống lưu log để cải thiện thuật toán Ranking sau này.
 
 # 3. Eval metrics + threshold
 
@@ -138,6 +163,6 @@ CineMate là một Mini AI Chatbot chuyên biệt, được thiết kế để t
 
 # Phân Công
 - Hoàng Đức Hưng: Canvas
-
+- Lê Hồng Anh: User Stories × 4 Paths
 - Nguyễn Hoàng Việt Hùng: Eval metrics và Threshold
 - Nguyễn Thị Hương Giang: Top 3 Failure
