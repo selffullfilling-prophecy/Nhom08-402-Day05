@@ -199,3 +199,4 @@ CineMate là một Mini AI Chatbot chuyên biệt, được thiết kế để t
 - Lê Hồng Anh: User Stories × 4 Paths
 - Nguyễn Hoàng Việt Hùng: Eval metrics và Threshold
 - Nguyễn Thị Hương Giang: Top 3 Failure
+- Mai Việt Hoàng: 3 ROI
