@@ -81,6 +81,43 @@ Trong bài toán hệ thống khuyến nghị (Recommendation System) và Agent 
 | **Diversity Score (Độ đa dạng)** | $\ge 0.6$ | $< 0.3$ | Tránh việc Agent chỉ gợi ý đi gợi ý lại các phim quá nổi tiếng (như *Squid Game* hay *Stranger Things*) cho mọi User. |
 
 
+
+
+
+
+
+### 6. Mini AI Chatbot Phim Ảnh
+
+## 1. Tổng quan dự án (Overview)
+CineMate là một Mini AI Chatbot chuyên biệt, được thiết kế để trở thành một "chuyên gia phim ảnh" cá nhân. Chatbot giúp người dùng tìm kiếm, khám phá và thảo luận về phim thông qua giao diện trò chuyện tự nhiên. Mục tiêu là giải quyết vấn đề "không biết xem gì hôm nay" và cung cấp thông tin phim nhanh chóng, chính xác.
+
+## 2. Đối tượng mục tiêu (Target Audience)
+* Người yêu thích phim ảnh (Cinephiles) muốn tìm hiểu sâu về điện ảnh.
+* Người dùng thông thường cần gợi ý phim giải trí cuối tuần.
+* Người dùng các nền tảng streaming (Netflix, Apple TV, rạp chiếu) cần tra cứu thông tin nhanh.
+
+## 3. Tính năng cốt lõi (Core Features - MVP)
+* **Gợi ý phim thông minh (Smart Recommendations):** Đề xuất phim dựa trên thể loại, tâm trạng (mood), diễn viên, đạo diễn, hoặc phim tương tự (VD: *"Gợi ý cho tôi phim hành động giống John Wick nhưng có yếu tố hài hước"*).
+* **Tra cứu thông tin chi tiết:** Cung cấp tóm tắt nội dung (không spoiler), điểm đánh giá (IMDb, Rotten Tomatoes, Letterboxd), dàn diễn viên, và năm phát hành.
+* **Chỉ điểm nền tảng xem phim:** Cho biết phim hiện đang chiếu rạp hay có sẵn trên nền tảng streaming nào tại Việt Nam.
+* **Giải đáp kiến thức điện ảnh (Movie Trivia/Q&A):** Trả lời các câu hỏi về giải thích cái kết (ending explanation), easter eggs, hoặc thông tin hậu trường.
+
+## 4. Yêu cầu kỹ thuật (Technical Architecture)
+* **AI Engine / LLM:** Sử dụng các mô hình ngôn ngữ lớn (như Gemini Flash hoặc GPT-4o-mini) để xử lý ngôn ngữ tự nhiên, tối ưu chi phí và tốc độ phản hồi.
+* **Kiến trúc RAG (Retrieval-Augmented Generation):**
+    * **Cơ sở dữ liệu (Vector DB):** Sử dụng Pinecone hoặc Milvus để lưu trữ vector hóa dữ liệu kịch bản và tóm tắt phim.
+    * **Nguồn dữ liệu API:** Tích hợp TMDB API (The Movie Database), OMDb API để cập nhật dữ liệu phim realtime.
+* **Nền tảng triển khai (Platforms):** Tích hợp dưới dạng Web Widget, Telegram Bot và Facebook Messenger.
+
+## 5. Yêu cầu Giao diện (UI/UX)
+* Hỗ trợ hiển thị dạng thẻ (Cards/Carousels) cho kết quả phim (gồm Poster, Tên phim, Điểm số, Nút "Xem trailer").
+* Tốc độ phản hồi (Latency): Dưới 2 giây cho mỗi tin nhắn.
+* Giọng văn (Tone of voice): Thân thiện, hài hước, và đam mê điện ảnh. Có thể thay đổi phong cách nói chuyện (VD: Giọng châm biếm như Deadpool hoặc nghiêm túc như nhà phê bình).
+
+## 6. Tiêu chí thành công (Success Metrics - KPIs)
+* **Độ chính xác (Accuracy):** Tỷ lệ ảo giác AI (Hallucination rate) liên quan đến thông tin phim < 5%.
+* **Mức độ tương tác:** Trung bình > 5 tin nhắn mỗi phiên trò chuyện (Session length).
+* **Tỷ lệ chuyển đổi (CTR):** > 10% người dùng click vào link xem trailer hoặc link nền tảng streaming.
 # Top 3 Failure Mode
 **Failure Mode 1: ảo giác phim không tồn tại**
 - Trigger: Người dùng yêu cầu 1 tổ hợp ngách, ví dụ "Gợi ý cho tôi một bộ phim hành động pha hài hước" thực tế trong file không có phim nào thỏa mãn điều kiện
