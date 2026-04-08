@@ -1,259 +1,54 @@
-# AI PRODUCT CANVAS: Netflix Q&A Chatbot (NGƯỜI LÀM: HOÀNG ĐỨC HƯNG)
+# 1. AI Product Canvas
 
-## 1. Đánh giá nhanh
+## Sản phẩm: Netflix Q&A Chatbot
 
-Bản canvas ban đầu **đúng hướng và khá tốt** ở 4 phần cốt lõi:
+|  | Value | Trust | Feasibility |
+|---|---|---|---|
+| **Câu hỏi** | User nào? Pain gì? AI giải gì? | Khi AI sai thì sao? User sửa bằng cách nào? | Cost/latency bao nhiêu? Risk chính? |
+| **Trả lời** | **User**: người dùng nền tảng xem phim trực tuyến, đặc biệt là người mở app nhưng chưa biết xem gì.<br><br>**Pain**: mất nhiều thời gian lướt danh mục, khó diễn đạt nhu cầu bằng filter thường, dễ bị “decision fatigue”. Nhiều nhu cầu rất mơ hồ như “phim nhẹ nhàng trước khi ngủ”, “phim giống Dark nhưng dễ hiểu hơn”, “phim gia đình cuối tuần”.<br><br>**AI giải gì**: chatbot giúp user mô tả nhu cầu bằng ngôn ngữ tự nhiên, sau đó trả về danh sách phim/series phù hợp nhanh hơn, có giải thích ngắn gọn vì sao được gợi ý. Mục tiêu là giảm thời gian tìm phim và tăng tỷ lệ bấm Play. | **Khi AI sai**: bot có thể hiểu sai mood, gợi ý phim không hợp độ tuổi, hoặc trả về phim không đủ khớp nhu cầu. Trường hợp nguy hiểm nhất là gợi ý phim không có trong catalog hiện tại hoặc trả lời quá tự tin nhưng sai.<br><br>**User sửa thế nào**: user có thể bấm “Không đúng ý”, chọn lại tiêu chí nhanh như “ít bạo lực hơn”, “mới hơn”, “đừng là series”, hoặc chọn một trong vài intent gợi ý sẵn. Nếu bot không chắc, bot phải hỏi lại ngắn gọn thay vì tự đoán.<br><br>**Recovery tốt**: sửa càng ít bước càng tốt, tốt nhất là 1 click hoặc 1 câu follow-up. | **Cost**: mỗi lượt chat có chi phí suy luận + retrieval; cần giới hạn số turn và số item trả về để tránh cost tăng mạnh. Với MVP, nên tối ưu bot thành lớp discovery ngắn thay vì hội thoại dài.<br><br>**Latency**: nên dưới ~2 giây; nếu quá chậm user sẽ quay lại browsing thủ công.<br><br>**Risk chính**: hallucination; gợi ý phim ngoài catalog; sai profile/kids safety; retrieval không đủ tốt cho các nhu cầu mơ hồ; chi phí cao nếu mở hội thoại dài; learning signal nhiễu vì watch time không phải lúc nào cũng phản ánh đúng chất lượng gợi ý. |
 
-- **Value**: nêu đúng pain point và value cho cả user lẫn business
-- **Trust**: chạm đúng rủi ro lớn nhất của chatbot phim là **hallucination + recommendation sai ngữ cảnh**
-- **Feasibility**: chọn đúng hướng kỹ thuật là **RAG + filter metadata**
-- **Learning signal**: đã phân biệt được **explicit** và **implicit**
+**Automation hay augmentation?**  
+- [ ] Automation  
+- [x] Augmentation  
 
-Tuy nhiên, để dùng cho học tập, pitching, hoặc thảo luận sản phẩm, bản này vẫn còn vài điểm cần chỉnh để chặt hơn và hợp lý hơn.
-
----
-
-## 2. Những điểm đang ổn
-
-### 2.1. Value rõ
-Bạn xác định đúng vấn đề: user không chỉ “thiếu phim để xem”, mà là **khó ra quyết định**. Đây là pain point rất thật.
-
-### 2.2. Trust đi đúng trọng tâm
-Bạn đã nhìn ra điều rất quan trọng: chatbot phim mà gợi ý **phim không có trên nền tảng**, hoặc **không đúng profile**, thì user mất niềm tin rất nhanh.
-
-### 2.3. Feasibility có tư duy hệ thống
-Bạn không nói chung chung “dùng AI”, mà đã nghĩ đến:
-- nguồn data
-- latency
-- cost
-- kiến trúc retrieval
-
-### 2.4. Learning signal có thể dùng được
-Bạn đã nêu được các tín hiệu hành vi sau gợi ý, đây là phần nhiều người hay bỏ sót.
+**Justify:** Augmentation hợp lý hơn vì việc chọn phim là quyết định mang tính sở thích và ngữ cảnh. User nên thấy gợi ý, xem lý do, rồi chọn hoặc sửa lại. Cost of reject thấp nếu bot chỉ đóng vai trò hỗ trợ khám phá nội dung, không tự quyết định thay user.
 
 ---
 
-## 3. Những điểm chưa hợp lý hoặc chưa đủ
+## Learning signal
 
-### 3.1. Phần Value đang hơi solution-first
-Bạn đang mô tả chatbot như một “chuyên gia điện ảnh”, nghe hay nhưng hơi lý tưởng hóa.
+1. **User correction đi vào đâu?**  
+   Đi vào:
+   - log truy vấn ban đầu + truy vấn sau khi sửa
+   - các nút feedback như 👍 / 👎 / “Không đúng ý”
+   - các refinement như “ít bạo lực hơn”, “mới hơn”, “phim giống X hơn”
+   - tín hiệu phim nào được click / play / add to My List sau câu trả lời  
+   Các correction này trước hết nên dùng để cải thiện **retrieval, ranking, prompt pattern và UX flow**, chưa nên coi là ground truth tuyệt đối để fine-tune model ngay.
 
-Thực tế hơn, nên framing sản phẩm này là:
+2. **Product thu signal gì để biết tốt lên hay tệ đi?**  
+   Một số signal chính:
+   - tỷ lệ user bấm **Play** từ giao diện chat
+   - thời gian từ lúc mở chat đến lúc chọn được phim
+   - số lần phải reformulate query trước khi chọn được nội dung
+   - tỷ lệ user bấm “Không đúng ý”
+   - tỷ lệ user bỏ chat và quay lại browse thủ công
+   - tỷ lệ add vào **My List**
+   - tỷ lệ không tương tác với bất kỳ gợi ý nào  
+   Lưu ý: đây là **proxy signals**, cần kết hợp nhiều tín hiệu; không nên dùng một chỉ số đơn lẻ như watch time > 10 phút để kết luận bot tốt.
 
-> một lớp conversational discovery giúp user đi từ nhu cầu mơ hồ đến lựa chọn xem phù hợp nhanh hơn.
+3. **Data thuộc loại nào?**  
+   - [x] User-specific  
+   - [x] Domain-specific  
+   - [x] Real-time  
+   - [ ] Human-judgment  
+   - [x] Khác: interaction logs / catalog availability / profile safety constraints  
 
-### 3.2. Business Value cần tránh claim quá mạnh
-Các ý như:
-- tăng retention rate
-- tăng watch time
-- hồi sinh phim cũ
-
-đều là **giả thuyết kinh doanh**, chưa phải kết quả chắc chắn. Nên viết theo hướng:
-- kỳ vọng cải thiện
-- metrics cần kiểm chứng bằng experiment
-
-### 3.3. Explainability không nên quá định lượng giả
-Câu như:
-
-> “khớp 95% với lịch sử xem của bạn”
-
-nghe không tự nhiên và dễ tạo cảm giác chính xác giả. Tốt hơn là lý do ngắn, dễ hiểu:
-
-- “Vì bạn thích sci-fi pha bí ẩn”
-- “Vì phim này có nhịp vừa phải và ít bạo lực hơn”
-
-### 3.4. “Zero-hallucination” là mục tiêu, không nên hứa tuyệt đối
-Thay vì khẳng định tuyệt đối, nên viết:
-- bot chỉ được trả lời dựa trên catalog hiện có
-- nếu không chắc, bot phải nói không tìm thấy kết quả phù hợp
-- bot đề xuất user nới tiêu chí thay vì bịa câu trả lời
-
-### 3.5. Feasibility đang thiếu scope MVP
-Hiện tại ý tưởng đang ôm khá nhiều:
-- tìm phim theo mood
-- hiểu ngôn ngữ mơ hồ
-- dùng lịch sử xem
-- giải thích lý do
-- nhận diện kids profile
-- xử lý license theo quốc gia
-
-Cần tách rõ:
-
-**MVP nên làm**
-- discovery trong catalog hiện có
-- tìm theo thể loại / mood đơn giản
-- tìm phim giống phim đã biết
-- tìm phim theo ràng buộc cơ bản
-- hỏi thông tin ngắn về phim đang có trên nền tảng
-
-**Chưa nên làm ở MVP**
-- hội thoại dài nhiều bước quá sâu
-- cá nhân hóa quá mạnh
-- tranh luận / review phim dài
-- trả lời kiến thức phim ngoài catalog
-
-### 3.6. Learning Signal cần chặt hơn
-Ví dụ:
-- `watch time > 10 phút = gợi ý đúng` chưa chắc
-- `thoát trong 2 phút = gợi ý sai` cũng chưa chắc
-
-Đây chỉ nên coi là **proxy signal**, cần kết hợp nhiều tín hiệu thay vì dựa vào một chỉ số đơn lẻ.
-
-### 3.7. Thiếu Failure mode / fallback
-Đây là phần rất quan trọng.
-
-Bot cần có cách xử lý khi:
-- không hiểu query
-- không có phim khớp
-- user không muốn chat tiếp
-- bot gợi ý nhưng user chưa hài lòng
-
----
-
-## 4. Phiên bản đã sửa
-
-## 4.1. Value (Giá trị cốt lõi)
-
-**Vấn đề giải quyết:**  
-Người dùng nền tảng xem phim trực tuyến thường mất nhiều thời gian để quyết định xem gì tiếp theo. Họ phải lướt qua quá nhiều lựa chọn, trong khi nhu cầu thực tế lại thường mơ hồ và mang tính ngữ cảnh, ví dụ như: “muốn xem phim nhẹ nhàng trước khi ngủ”, “muốn phim giống Dark nhưng dễ hiểu hơn”, hoặc “muốn xem gì đó cho cả gia đình cuối tuần”.
-
-**User Value (Giá trị cho người dùng):**
-- Giảm thời gian từ lúc mở ứng dụng đến lúc chọn được nội dung để xem.
-- Cho phép người dùng diễn đạt nhu cầu bằng ngôn ngữ tự nhiên thay vì phải tự lọc qua danh mục.
-- Hỗ trợ các nhu cầu mơ hồ hoặc khó biểu đạt bằng filter truyền thống, như mood, pacing, mức độ bạo lực, hoặc kiểu trải nghiệm mong muốn.
-
-**Business Value (Giá trị cho doanh nghiệp):**
-- Tăng tỷ lệ người dùng bắt đầu phát nội dung sau khi khám phá.
-- Giảm tình trạng rời ứng dụng vì không tìm được phim phù hợp.
-- Tăng khả năng khám phá catalog sâu hơn, bao gồm cả nội dung ngách hoặc ít được hiển thị ở các hàng đề xuất mặc định.
-- Tạo thêm một giao diện khám phá nội dung mới bên cạnh search và recommendation feed truyền thống.
-
----
-
-## 4.2. Trust (Độ tin cậy & an toàn)
-
-**Rào cản lòng tin:**  
-Người dùng sẽ nhanh chóng mất niềm tin nếu chatbot:
-- gợi ý phim không có trên nền tảng,
-- hiểu sai nhu cầu,
-- đưa ra phim không phù hợp với độ tuổi hoặc profile,
-- hoặc trả lời rất tự tin nhưng thực chất sai dữ liệu.
-
-**Nguyên tắc xây dựng lòng tin:**
-- **Grounded responses:** bot chỉ được trả lời dựa trên catalog hiện có của nền tảng ở thị trường của người dùng.
-- **No-answer is better than fake-answer:** nếu không tìm thấy kết quả phù hợp, bot phải nói rõ và đề xuất nới tiêu chí thay vì bịa ra câu trả lời.
-- **Explainable recommendation:** mỗi gợi ý nên có lý do ngắn, dễ hiểu, ví dụ:  
-  “Gợi ý này phù hợp vì bạn muốn phim trinh thám nhưng không quá nặng nề và có nhịp xem vừa phải.”
-- **Profile-aware safety:** nếu là Kids Profile, bot chỉ truy xuất và gợi ý từ tập nội dung an toàn cho trẻ em.
-- **Consistency:** tiêu đề, rating, thể loại, thời lượng, availability phải khớp với dữ liệu thật trên hệ thống.
-
----
-
-## 4.3. Feasibility (Tính khả thi)
-
-**Dữ liệu khả dụng:**
-- Metadata phim/series: tiêu đề, thể loại, mô tả, cast, đạo diễn, năm phát hành, rating, thời lượng, quốc gia, tags.
-- Dữ liệu hành vi cơ bản: lịch sử xem, My List, lượt click Play, lượt bỏ dở.
-- Dữ liệu ngữ cảnh hệ thống: profile hiện tại, ngôn ngữ, quốc gia, loại thiết bị.
-
-**Kiến trúc đề xuất:**
-- Dùng **RAG** để chatbot không sinh câu trả lời tự do từ trí nhớ mô hình.
-- Lớp retrieval gồm:
-  - **metadata filtering** cho các điều kiện cứng như rating, năm, thể loại, availability
-  - **semantic retrieval / vector search** cho các nhu cầu mềm như mood, vibe, nhịp phim, hoặc “giống phim X”
-- Lớp generation có nhiệm vụ:
-  - diễn giải nhu cầu user
-  - tổng hợp và trình bày danh sách gợi ý
-  - đưa ra lý do gợi ý ngắn gọn
-
-**Ràng buộc kỹ thuật:**
-- Latency cần thấp, tốt nhất trong khoảng 1–2 giây.
-- Cần giới hạn độ dài hội thoại và số lượng item trả về để kiểm soát cost.
-- Cần cache cho các truy vấn phổ biến như:
-  - “phim hài nhẹ nhàng”
-  - “phim gia đình cuối tuần”
-  - “phim giống Stranger Things”
-
-**Phạm vi MVP đề xuất:**
-- Chỉ hỗ trợ discovery trong catalog hiện có
-- Chỉ xử lý 4 nhóm intent đầu tiên:
-  1. tìm theo thể loại / mood
-  2. tìm phim giống phim đã biết
-  3. tìm phim theo ràng buộc đơn giản
-  4. hỏi thông tin ngắn về phim đang có trên nền tảng
-
-**Chưa nên làm ở MVP:**
-- hội thoại dài nhiều bước quá sâu
-- cá nhân hóa quá mạnh dựa trên toàn bộ lịch sử xem
-- tranh luận, review phim dài kiểu “movie companion”
-- trả lời kiến thức phim ngoài catalog nền tảng
-
----
-
-## 4.4. Learning Signal (Tín hiệu học hỏi)
-
-**Mục tiêu:**  
-Dùng phản hồi người dùng để cải thiện retrieval, ranking và UX flow của chatbot theo thời gian.
-
-**Explicit signals (tín hiệu chủ động):**
-- Nút 👍 / 👎 cho câu trả lời
-- Nút “Không đúng ý, thử lại”
-- User sửa lại truy vấn, ví dụ:
-  - “ít bạo lực hơn”
-  - “đừng là series”
-  - “phim mới hơn”
-- User chọn trực tiếp một phim trong danh sách bot gợi ý
-
-**Implicit signals (tín hiệu hành vi):**
-- Tích cực:
-  - user bấm Play từ kết quả chat
-  - user thêm phim vào My List
-  - user không cần reformulate query thêm
-  - user xem đủ một khoảng meaningful sau khi chọn từ chat
-- Tiêu cực:
-  - user liên tục hỏi lại với tiêu chí khác vì bot chưa hiểu
-  - user bỏ chat và quay lại browse thủ công
-  - user bấm vào gợi ý nhưng thoát rất sớm nhiều lần liên tiếp
-  - user không tương tác với bất kỳ gợi ý nào
-
-**Lưu ý:**  
-Các tín hiệu hành vi này chỉ là **proxy**, không phải ground truth. Cần kết hợp nhiều tín hiệu để đánh giá chất lượng recommendation thay vì dựa vào một chỉ số đơn lẻ.
-
----
-
-## 4.5. Failure Modes / Fallbacks
-
-**Khi bot không hiểu truy vấn:**
-- hỏi lại bằng câu ngắn
-- đề xuất 2–3 hướng chọn nhanh
-
-Ví dụ:  
-“Bạn muốn phim nhẹ nhàng, gay cấn, hay cảm động?”
-
-**Khi không có phim khớp hoàn toàn:**
-- nói rõ không có kết quả đúng 100%
-- gợi ý nới lỏng một tiêu chí
-
-Ví dụ:  
-“Hiện chưa có phim Bắc Âu đúng yêu cầu này. Bạn có muốn mở rộng sang phim châu Âu cùng vibe không?”
-
-**Khi user không muốn chat tiếp:**
-- cho phép chuyển ngay sang danh sách click-able
-- giữ bot như lớp hỗ trợ, không thay thế hoàn toàn browsing UI
-
----
-
-## 5. Kết luận
-
-Canvas ban đầu của bạn **đúng hướng và có nền khá tốt**. Sau khi sửa, bản này chặt hơn ở 4 điểm quan trọng:
-
-1. Giảm bớt ngôn ngữ quá lý tưởng, tăng tính thực tế sản phẩm  
-2. Tách rõ giả thuyết kinh doanh với kết quả cần kiểm chứng  
-3. Thêm phạm vi MVP rõ ràng  
-4. Bổ sung failure modes và fallback
-
-Điểm mạnh nhất của ý tưởng này là nó giải quyết một pain point rất thật: **người dùng biết mình muốn cảm giác gì, nhưng không biết phải bắt đầu tìm từ đâu**.
-
+   **Có marginal value không?**  
+   Có. Dữ liệu này có marginal value vì:
+   - lịch sử xem và profile giúp cá nhân hóa tốt hơn cho từng user
+   - catalog availability theo quốc gia/thời điểm là dữ liệu động, model nền không tự biết chính xác
+   - correction trong ngữ cảnh sản phẩm giúp cải thiện retrieval/ranking cho đúng use case discovery
+   - các refinement như “đừng là series”, “ít máu me hơn”, “xem trước khi ngủ” phản ánh nhu cầu thực tế rất đặc thù mà model tổng quát không nắm chắc nếu không có signal từ sản phẩm
 
 
 ### 1. Optimize Precision hay Recall?
