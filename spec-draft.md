@@ -120,10 +120,10 @@ Trong bài toán hệ thống khuyến nghị (Recommendation System) và Agent 
 **Failure mode 3: Bị thiên kiến bias vì lạm dụng hành vi người dùng**
 - Trigger: Người dùng có lịch sử 6 tháng qua chỉ toàn xem phim ngôn tình Hàn Quốc. Hôm nay họ nhắn với chatbot: "Cuối tuần này tôi đang chán, muốn xem một thể loại gì đó thật mới mẻ, giật gân, đột phá để đổi gió."
 - Consequence: thuật toán bị Overfitting (High Bias vào quá khứ), nó đánh trọng số lịch sử quá cao. Kết quả là nó vẫn tiếp tục gợi ý phim tình cảm Hàn Quốc nhưng cố gắng miêu tả là rất đột phá. Bot không bắt được sự thay đổi ý định của người dùng
-- Mitigation:
+- Mitigation: Khi User yêu cầu "thể loại mới", Agent tự động gán điểm phạt (Penalty score) cho các phim có Tag trùng với Top 3 thể loại xem nhiều nhất trong lịch sử.
 
 
-# 5. PHÂN TÍCH CHI TIẾT 3 KỊCH BẢN ROI (RETURN ON INVESTMENT)
+# 5. ROI 3 kịch bản
 
 ---
 
