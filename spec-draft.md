@@ -80,5 +80,24 @@ Trong bài toán hệ thống khuyến nghị (Recommendation System) và Agent 
 | **Response Latency (Độ trễ)** | $< 3s$ | $> 7s$ | Thời gian từ lúc User hỏi đến khi Agent trả lời. Quá 7 giây người dùng sẽ mất kiên nhẫn. |
 | **Diversity Score (Độ đa dạng)** | $\ge 0.6$ | $< 0.3$ | Tránh việc Agent chỉ gợi ý đi gợi ý lại các phim quá nổi tiếng (như *Squid Game* hay *Stranger Things*) cho mọi User. |
 
+
+# Top 3 Failure Mode
+**Failure Mode 1: ảo giác phim không tồn tại*8
+- Trigger: Người dùng yêu cầu 1 tổ hợp ngách, ví dụ "Gợi ý cho tôi một bộ phim hành động pha hài hước" thực tế trong file không có phim nào thỏa mãn điều kiện
+- Consequence: Do bản tính chiều theo người dùng AI tự bịa ra một cái tên mới nghe hợp lý
+- Mitigation: Bắt buộc dùng RAG cứng LLM không được phép tự bịa ra tên phim. Output tên phim trước khi hiển thị phải trải qua 1 hàm kiểm tra xem tên phim này có thật sự nằm trong dtb không, nếu không trả về luồng fallback
+
+**Failure mode 2: Bỏ qua các ràng buộc cứng**
+- Trigger: Người dùng ra lệnh: "Tôi muốn xem một phim khoa học viễn tưởng, dưới 90 phút, và chỉ dành cho trẻ em (rating PG-13) để xem cùng con
+- Consequence: AI tìm thấy một bộ phim khoa học viễn tưởng có độ liên quan ngữ nghĩa cực cao nhưng nó bỏ qua điều kiện thời gian và nhãn dán. Kết quả trả ra phim dài hơn 90 phút hoặc một bộ phim kinh dị, bạo lực.
+- Mitigation: Trước khi đem câu hỏi đi tìm kiếm, phải có một bước dùng AI (hoặc quy tắc) trích xuất các điều kiện cứng thành JSON, sử dụng Metadata Filtering trên dataset trước. Dùng code lọc bỏ tất cả phim > 90 phút và phim R-rated khỏi dữ liệu, sau đó AI mới được phép gợi ý các phim còn lại trong rổ
+
+**Failure mode 3: Bị thiên kiến bias vì lạm dụng hành vi người dùng**
+- Trigger: Người dùng có lịch sử 6 tháng qua chỉ toàn xem phim ngôn tình Hàn Quốc. Hôm nay họ nhắn với chatbot: "Cuối tuần này tôi đang chán, muốn xem một thể loại gì đó thật mới mẻ, giật gân, đột phá để đổi gió."
+- Consequence:thuật toán bị Overfitting (High Bias vào quá khứ), nó đánh trọng số lịch sử quá cao. Kết quả là nó vẫn tiếp tục gợi ý phim tình cảm Hàn Quốc nhưng cố gắng miêu tả là rất đột phá. Bot không bắt được sự thay đổi ý định của người dùng
+- Mitigation: Trong Prompt hệ thống, cần thiết lập quy tắc khi phát hiện từ khóa "đổi gió, mới mẻ, khác biệt, khác", hệ thống phải giảm trọng số lịch sử người dùng xuống 0% và kích hoạt thuật toán gợi ý ngẫu nhiên có kiểm soát hoặc gợi ý các phim "Trending Top 10" nằm ngoài cụm sở thích thường ngày của họ
+
 ## Phân Công
 - Hoàng Đức Hưng: Canvas
+
+- Nguyễn Thị Hương Giang: Top 3 Failure
