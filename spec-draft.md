@@ -285,3 +285,5 @@ Trong bài toán hệ thống khuyến nghị (Recommendation System) và Agent 
 | **Response Latency (Độ trễ)** | $< 3s$ | $> 7s$ | Thời gian từ lúc User hỏi đến khi Agent trả lời. Quá 7 giây người dùng sẽ mất kiên nhẫn. |
 | **Diversity Score (Độ đa dạng)** | $\ge 0.6$ | $< 0.3$ | Tránh việc Agent chỉ gợi ý đi gợi ý lại các phim quá nổi tiếng (như *Squid Game* hay *Stranger Things*) cho mọi User. |
 
+## Phân Công
+- Hoàng Đức Hưng: Canvas
