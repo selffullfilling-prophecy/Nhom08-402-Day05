@@ -25,11 +25,11 @@ def parse_mood_node(state: AgentState):
 
 def retrieval_node(state: AgentState):
     print("--- [NODE] Lọc ứng viên thô từ JSON ---")
-    candidates = retrieve_candidates(state['target_genres'], max_candidates=15)
+    candidates = retrieve_candidates(state['target_genres'], max_candidates=20)
     return {"candidate_movies": candidates}
 
 def llm_ranking_node(state: AgentState):
-    print("--- [NODE] LLM tự chấm điểm & chọn Top 3 ---")
+    print("--- [NODE] LLM tự chấm điểm & chọn Top 15 ---")
     candidates = state.get('candidate_movies', [])
     if not candidates:
         return {"top_k_movies": []}
@@ -38,7 +38,7 @@ def llm_ranking_node(state: AgentState):
     candidates_text = "\n".join([f"- ID: '{m.get('show_id')}' | Phim: {m.get('title')}\n  Mô tả: {m.get('description')}" for m in candidates])
 
     system_prompt = """Bạn là một giám khảo điện ảnh công tâm. 
-    Chỉ được trả về một danh sách chứa ĐÚNG 3 mã show_id (copy chính xác từng ký tự, không thêm chữ 'ID:') của 3 bộ phim phù hợp nhất."""
+    Chỉ được trả về một danh sách chứa ĐÚNG  mã show_id (copy chính xác từng ký tự, không thêm chữ 'ID:') của 15 bộ phim phù hợp nhất."""
     
     human_prompt = f"Tâm trạng: {state['user_story']} (Từ khóa: {state['semantic_query']})\n\nDanh sách ứng viên:\n{candidates_text}"
     
@@ -49,7 +49,7 @@ def llm_ranking_node(state: AgentState):
     ])
     
     # 2. Làm sạch ID (xóa khoảng trắng thừa) trước khi so sánh
-    selected_ids = [str(sid).strip() for sid in result.selected_show_ids[:3]]
+    selected_ids = [str(sid).strip() for sid in result.selected_show_ids[:15]]
     print(f"[DEBUG] Các ID mà LLM đã chọn: {selected_ids}")
     
     top_k = []
@@ -60,8 +60,8 @@ def llm_ranking_node(state: AgentState):
             
     # 3. FALLBACK AN TOÀN: Nếu vì lý do nào đó LLM trả về ID sai khiến top_k rỗng
     if not top_k and candidates:
-        print("[WARNING] LLM trả về ID không khớp. Kích hoạt Fallback lấy 3 phim đầu.")
-        top_k = candidates[:3]
+        print("[WARNING] LLM trả về ID không khớp. Kích hoạt Fallback lấy 15 phim đầu.")
+        top_k = candidates[:15]
         
     return {"top_k_movies": top_k}
 def synthesize_response_node(state: AgentState):
