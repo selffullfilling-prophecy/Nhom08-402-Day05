@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: netflix-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: netflix_qa
+      POSTGRES_USER: netflix
+      POSTGRES_PASSWORD: netflix
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+      - ./dataset:/dataset:ro
+
+volumes:
+  postgres_data:
