@@ -35,8 +35,6 @@ Chatbot này hoạt động như một lớp **conversational discovery**:
 - Tránh lý do gợi ý quá định lượng giả (ví dụ: "khớp 95%")
 - Khi không chắc, bot phải nói không tìm thấy thay vì bịa câu trả lời
 
-
-
 ### Metrics Kiểm Chứng
 - **Click-through rate**: Tỉ lệ user click vào gợi ý
 - **Watch time > 10 phút**: Proxy signal cho gợi ý đúng
